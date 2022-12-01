@@ -5,8 +5,6 @@
 
 using namespace std;
 
-
-
 ifstream f(TEST == 1 ? "test.in" : "main.in");
 int MAX = -1; int sum = 0; string a = "";
 int main() {
