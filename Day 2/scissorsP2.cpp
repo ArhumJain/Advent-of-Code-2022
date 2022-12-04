@@ -1,12 +1,8 @@
-
-#include <iostream>
-#include <fstream>
-#include <math.h>
+#include "../advent.h"
 
 #define TEST 0
-using namespace std;
 
-ifstream f(TEST == 1 ? "test.in" : "main.in");
+RFILE f(TEST == 1 ? "test.in" : "main.in");
 
 int sum = 0;
 char opp, res;
