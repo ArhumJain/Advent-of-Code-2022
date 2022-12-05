@@ -1,11 +1,10 @@
 #include <iostream>
-#include <set>
 #include <vector>
 #include <fstream>
 #include <algorithm>
 #include <unordered_map>
 
-#define TEST 0
+#define TEST 1
 
 using namespace std;
 
@@ -30,7 +29,6 @@ int main() {
             }
         }
         if (f.eof()) break;
-
     }
     cout << sum << endl;
 
