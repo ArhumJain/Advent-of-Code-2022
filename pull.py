@@ -2,8 +2,9 @@ import os
 from dotenv import load_dotenv
 import requests
 from bs4 import BeautifulSoup
+import re
+import shutil
 
-# cookie = "53616c7465645f5fc4d9045b0ebebd44af2443b422cb7c99413b881de401af17e6b05a50449be6bbc5dc2198aa0fc0ffdb49aed5984ff1a7ab73097327a4019a"
 load_dotenv()
 def main():
     cookie = os.environ["COOKIE"]
@@ -22,12 +23,12 @@ def main():
 
     html = BeautifulSoup(content, "html.parser")
 
-    print(html.find("span", {"id":"calendar-countdown"}).parent.findChild("span", class_="calendar-day").text)
     day = ""
     input_url = ""
     while day == "":
         day = input("Day: ")
-        element = html.select(f"[h']")[0]
+        element = html.find_all(["span", "a"], {'class': re.compile(rf'^calendar-day{day}')})[-1]
+        print(element["class"])
         if (element.findChild("span", {"id": "calendar-countdown"}) != None):
             print("This puzzle will unlock at exactly 9:00 PM (PST) tonight.")
             day = ""
@@ -37,23 +38,46 @@ def main():
             day = ""
             continue
         input_url = element["href"]
-    print(input_url)
-    pInput = requests.get(f"https://adventofcode.com{input_url}/input", headers=HEADERS).content
-    inputParse = BeautifulSoup(pInput, "html.parser")
+
     print("Getting main input...")
-    print(inputParse.get_text())
+    mainInput = requests.get(f"https://adventofcode.com{input_url}/input", headers=HEADERS).content
+    mainInput = BeautifulSoup(mainInput, "html.parser")
+
+    dir = os.path.join(os.getcwd(), f"Day {day}")
+    print("Creating directory...")
+    if os.path.isdir(dir):
+        print(f"Directory {dir} already exists... Skipping creation")
+    else:
+        os.mkdir(dir)
+        print(f"Directory {dir} created")
+    
+    print("Creating main input file...")
+    if (os.path.exists(os.path.join(dir, "main.in"))):
+        print(f"File {dir}/main.in already exists... Skipping creation")
+    else:
+        with open(os.path.join(dir, "main.in"), "w") as f:
+           f.writelines(mainInput.get_text().rstrip())
+           print(f"File {dir}/main.in created")
+    
+    print("Creating test input file...")
+    if (os.path.exists(os.path.join(dir, "test.in"))):
+        print(f"File {dir}/test.in already exists... Skipping creation")
+    else:
+        open(os.path.join(dir, "test.in"), "w")
+        print(f"Testing file {dir}/test.in created")
+
+    while True: 
+        name = input("Name the puzzle: ")
+
+        if (os.path.exists(os.path.join(dir, f"{name}P1.cpp")) or os.path.exists(os.path.join(dir, f"{name}P2.cpp"))):
+            print("A file with that name already exists")
+            continue
+        else:
+            shutil.copy(os.path.join(os.getcwd(), "template.txt"), os.path.join(dir, f"{name}P1.cpp"))
+            shutil.copy(os.path.join(os.getcwd(), "template.txt"), os.path.join(dir, f"{name}P2.cpp"))
+            print("Code files for Parts 1 and 2 created.")
+            break
+    print("Finished.")
 
 if __name__=="__main__":
     main()
-
-
-
-
-
-
-
-# print(html.prettify())
-
-# print(html.find_all("span", class_="calendar-day5"))
-# print(html.select_one(".calendar-day5"))
-# print(html)
