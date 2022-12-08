@@ -7,7 +7,7 @@ F f(TEST == 1 ? "test.in" : "main.in");
 
 struct Directory {
 	umap<string, Directory *> dirs;
-	umap<string, long> files;
+	umap<string, int> files;
 	string name;
 	int size = 0;
 	Directory *parent;
