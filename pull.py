@@ -74,8 +74,12 @@ def main():
             print("A file with that name already exists")
             continue
         else:
-            shutil.copy(os.path.join(os.getcwd(), "template.txt"), os.path.join(dir, f"{name}P1.cpp"))
-            shutil.copy(os.path.join(os.getcwd(), "template.txt"), os.path.join(dir, f"{name}P2.cpp"))
+            try:
+                shutil.copy(os.path.join(os.getcwd(), "template.txt"), os.path.join(dir, f"{name}P1.cpp"))
+                shutil.copy(os.path.join(os.getcwd(), "template.txt"), os.path.join(dir, f"{name}P2.cpp"))
+            except:
+                print("Error: the template file 'template.txt' does not exist in the current working directory. This file is required to setup the base template.")
+                continue
             print("Code files for Parts 1 and 2 created.")
             break
     print("Finished.")
