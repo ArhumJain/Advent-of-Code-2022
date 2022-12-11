@@ -31,4 +31,15 @@ namespace aoc {
             cout << endl;
         }
     }
+
+    vector<string> split(string s, string d = " ") { // thanks stackoverflow!
+        vector<string> sp;
+        int start, end = -1*d.size();
+        do {
+            start = end + d.size();
+            end = s.find(d, start);
+            sp.push_back(s.substr(start, end-start));
+        } while (end != -1);
+        return sp;
+    }
 }
