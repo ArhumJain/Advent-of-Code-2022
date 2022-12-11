@@ -18,6 +18,7 @@ def main():
     print(f"Connection: {result.status_code}")
     if (result.status_code != 200):
         print(f"Something went wrong: {result.status_code}")
+        return
 
     content = result.content
 
