@@ -2,11 +2,11 @@
 
 using namespace aoc;
 
-constexpr int TEST = 1;
+constexpr int TEST = 0;
 F f(TEST == 1 ? "test.in" : "main.in");
 
 struct Monkey {
-    vector<unsigned long long int> items;
+    vector<ull> items;
     string op;
     string opVal;
     int divisor;
@@ -14,13 +14,14 @@ struct Monkey {
     Monkey *trueM;
     Monkey *falseM;
 
-    unsigned long long int operate(unsigned long long int level) {
-        unsigned long long int val = opVal == "old" ? level : stoi(opVal);
+    ull operate(int level) {
+        ull val = opVal == "old" ? level : stoi(opVal);
         return op == "+" ? level + val : level * val;
     }
 };
+
 int main() {
-    vec<Monkey> monkeys(4);
+    vec<Monkey> monkeys(8);
     string s;
     string _;
     for (int i=0; i<monkeys.size(); i++) {
@@ -40,15 +41,14 @@ int main() {
         monkeys[i].falseM = &monkeys[s[s.size()-1] - '0'];
         getline(f, s);
     }
+    int multiple = 1;
+    for (auto monkey: monkeys) multiple *= monkey.divisor;
     for (int round = 0; round < 10000; round++) {
-        if (round == 19) {
-            cout << "hi " << endl;
-        }
         for (int i=0; i<monkeys.size(); i++) {
             for (int item: monkeys[i].items) {
                 if (monkeys[i].operate(item) % monkeys[i].divisor == 0) {
-                    monkeys[i].trueM->items.push_back(monkeys[i].operate(item));
-                } else monkeys[i].falseM->items.push_back(monkeys[i].operate(item));
+                    monkeys[i].trueM->items.push_back(monkeys[i].operate(item)%multiple);
+                } else monkeys[i].falseM->items.push_back(monkeys[i].operate(item)%multiple);
                 monkeys[i].inspect++;
             }
             monkeys[i].items.clear();
@@ -57,5 +57,5 @@ int main() {
     sort(monkeys.begin(), monkeys.end(), [] (const Monkey &a, const Monkey &b) { return a.inspect > b.inspect; });
     cout << monkeys[0].inspect << endl;
     cout << monkeys[1].inspect << endl;
-    cout << (long)(monkeys[0].inspect * monkeys[1].inspect);
 }
+
