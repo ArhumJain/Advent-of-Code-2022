@@ -19,6 +19,10 @@ namespace aoc {
     template<typename T1, typename T2>
     using tup = tuple<T1, T2>;
 
+    using ul = unsigned long;
+    using ll = long long;
+    using ull = unsigned long long;
+
     template <typename T> 
     void print1d(vector<T> &v) {
         for (T i: v) cout << i << endl;
