@@ -57,7 +57,7 @@ int compare(Packet &left, Packet &right) {
             result = compare(*left.subPackets[i], *right.subPackets[i]);
             if (result != -1) return result;
         }
-        return -1;
+        return 1;
     } else {
         if (left.integer != -1) {
             left.subPackets.push_back(new Packet(left.integer));
@@ -80,7 +80,8 @@ int main() {
     int sum = 0;
     int index = 1;
     while (true) {
-        f >> left >> right; // stuck on left side ran out of items, continue testing with pair 4 (1, 2, and 3 pass)
+        f >> left >> right; // stuck on left side ran out of items, continue testing with pair 7 (segfault because of empty packets) 
+                            // (1, 2, 3, 4, 5, 6 pass)
         indices.push_back(make_pair(createPacket(left), createPacket(right)));
         if (compare(indices[index-1].first, indices[index-1].second) == 1) {
             sum += index;
