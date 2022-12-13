@@ -2,7 +2,7 @@
 
 using namespace aoc;
 
-constexpr int TEST = 1;
+constexpr int TEST = 0;
 F f(TEST == 1 ? "test.in" : "main.in");
 
 struct Packet {
@@ -14,25 +14,27 @@ struct Packet {
     }
 };
 Packet createPacket(string p) {
+    sstream a(p);
     Packet main;
     Packet *curr;
-    stack<Packet*> s;
-    s.push(&main);
-    for (int i=1; i<p.size()-1; i++) {
-        if (p[i] == '[') {
-            s.push(new Packet());
-        }
-        else if (p[i] ==']') {
+    stack<Packet*> s; s.push(&main);
+    char read; int integer;
+    while (true) {
+        a >> read;
+        if (read == '[') s.push(new Packet());
+        else if (read ==']') {
             curr = s.top();
             s.pop();
             if (s.size() != 0) s.top()->subPackets.push_back(curr);
-        } else if (p[i] != ',' ) {
-            s.top()->subPackets.push_back(new Packet(p[i]-'0'));
+        } else if (read != ',' ) {
+            a.unget(); a >> integer;
+            s.top()->subPackets.push_back(new Packet(integer));
         }
+        if (a.eof()) break;
     }
     return main;
 }
-void printPacket(Packet p) {
+void printPacket(Packet p) { // Helper function for debugging
     if (p.integer != -1) {
         cout << p.integer << " ";
         return;
@@ -45,53 +47,40 @@ void printPacket(Packet p) {
     }
 
 }
-
-int compare(Packet &left, Packet &right) {
-    cout << "Compare "; printPacket(left); cout << "vs "; printPacket(right); cout << endl;
+int compare(Packet left, Packet right) {
     if (left.integer != -1 && right.integer != -1){
         if (left.integer == right.integer) return -1;
         else return left.integer < right.integer;
-    } else if (left.integer == -1 && right.integer == -1) {
-        for (int i=0; i<left.subPackets.size(); i++) {
-            int result;
-            if (i > static_cast<int>(right.subPackets.size())-1) return 0;
-            result = compare(*left.subPackets[i], *right.subPackets[i]);
-            if (result != -1) return result;
-        }
-        if (left.subPackets.size() < right.subPackets.size()) return 1;
-        else return -1;
-        // return 1;
-    } else {
-        if (left.integer != -1) {
-            left.subPackets.push_back(new Packet(left.integer));
-            left.integer = -1;
-            // return compare(*left.subPackets[0], right);
-        }
-        else if (right.integer != -1) {
-            right.subPackets.push_back(new Packet(right.integer));
-            right.integer = -1;
-            // return compare(left, *right.subPackets[0]);
-        }
-        return compare(left, right);
     }
+    else if (left.integer != -1) {
+        int integer = left.integer;
+        left = Packet();
+        left.subPackets.push_back(new Packet(integer));
+    }
+    else if (right.integer != -1) {
+        int integer = right.integer;
+        right = Packet();
+        right.subPackets.push_back(new Packet(integer));
+    }
+    int result = -2;
+    for (int i=0; i<left.subPackets.size(); i++) {
+        if (i > static_cast<int>(right.subPackets.size())-1) return 0;
+        result = compare(*left.subPackets[i], *right.subPackets[i]);
+        if (result != -1) return result;
+    }
+    if (left.subPackets.size() < right.subPackets.size()) return 1;
+    else return -1;
 }
-
 int main() {
     vec<pair<Packet, Packet>> indices;
-
     string left, right;
-    int sum = 0;
-    int index = 1;
+    int sum = 0; int index = 1;
     while (true) {
-        f >> left >> right; // stuck on left side ran out of items, continue testing with pair 7 (segfault because of empty packets) 
-                            // (1, 2, 3, 4, 5, 6 pass)
+        f >> left >> right; 
         indices.push_back(make_pair(createPacket(left), createPacket(right)));
-        if (compare(indices[index-1].first, indices[index-1].second) == 1) {
-            sum += index;
-        }
+        if (compare(indices[index-1].first, indices[index-1].second) == 1) sum += index;
         index++;
         if (f.eof()) break;
     }
     cout << sum << endl;
-    // printPacket(indices[7].second);
 }
