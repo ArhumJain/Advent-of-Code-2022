@@ -47,17 +47,20 @@ void printPacket(Packet p) {
 }
 
 int compare(Packet &left, Packet &right) {
+    cout << "Compare "; printPacket(left); cout << "vs "; printPacket(right); cout << endl;
     if (left.integer != -1 && right.integer != -1){
         if (left.integer == right.integer) return -1;
         else return left.integer < right.integer;
     } else if (left.integer == -1 && right.integer == -1) {
         for (int i=0; i<left.subPackets.size(); i++) {
             int result;
-            if (i > right.subPackets.size()-1) return 0;
+            if (i > static_cast<int>(right.subPackets.size())-1) return 0;
             result = compare(*left.subPackets[i], *right.subPackets[i]);
             if (result != -1) return result;
         }
-        return 1;
+        if (left.subPackets.size() < right.subPackets.size()) return 1;
+        else return -1;
+        // return 1;
     } else {
         if (left.integer != -1) {
             left.subPackets.push_back(new Packet(left.integer));
@@ -90,5 +93,5 @@ int main() {
         if (f.eof()) break;
     }
     cout << sum << endl;
-    printPacket(indices[7].second);
+    // printPacket(indices[7].second);
 }
