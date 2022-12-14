@@ -2,12 +2,13 @@
 
 using namespace aoc;
 
-constexpr int TEST = 1;
+constexpr int TEST = 0;
 F f(TEST == 1 ? "test.in" : "main.in");
 
 struct Packet {
     vec<Packet*> subPackets;
     int integer = -1;
+    bool divider;
     Packet(){}
     Packet(int i) {
         integer = i;
@@ -73,28 +74,18 @@ int compare(Packet left, Packet right) {
 }
 int main() {
     vec<Packet> packets;
-    packets.push_back(createPacket("[[2]]"));
-    packets.push_back(createPacket("[[6]]"));
-    // vec<pair<Packet, Packet>> indices;
-    // string left, right;
-    // int sum = 0; int index = 1;
+    packets.push_back(createPacket("[[2]]")); packets.back().divider = true;
+    packets.push_back(createPacket("[[6]]")); packets.back().divider = true;
     string s;
     while (true) {
         f >> s; 
-        // indices.push_back(make_pair(createPacket(left), createPacket(right)));
         packets.push_back(createPacket(s));
-        // if (compare(indices[index-1].first, indices[index-1].second) == 1) sum += index;
-        // index++;
         if (f.eof()) break;
     }
     sort(packets.begin(), packets.end(), [] (const Packet &a, const Packet &b) {return compare(a, b);});
     int key = 1;
     for (int i=0; i<packets.size(); i++) {
-        if ((*packets[i].subPackets[0]).integer == 2 || (*packets[i].subPackets[0]).integer == 6) {
-            key *= (i+1);
-        }
-        printPacket(*packets[i].subPackets[0]);
-        cout << endl;
+        if (packets[i].divider) key *= (i+1);
     }
     cout << key << endl;
 }

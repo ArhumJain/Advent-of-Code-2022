@@ -23,6 +23,8 @@ namespace aoc {
     using ll = long long;
     using ull = unsigned long long;
 
+    using sstream = stringstream;
+
     template <typename T> 
     void print1d(vector<T> &v) {
         for (T i: v) cout << i << endl;
