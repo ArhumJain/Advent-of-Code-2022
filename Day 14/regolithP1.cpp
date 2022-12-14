@@ -8,13 +8,9 @@ F f(TEST == 1 ? "test.in" : "main.in");
 bool isOccupied(int x, int y, SegmentList &s) {
     for (auto &sg: s) {
         if (x == sg.first.first && x == sg.second.first) {
-            if ((y >= sg.first.second && y <= sg.second.second) || (y <= sg.first.second && y >= sg.second.second)) {
-                return true;
-            }
+            if ((y >= sg.first.second && y <= sg.second.second) || (y <= sg.first.second && y >= sg.second.second)) return true;
         } else if (y == sg.first.second && y == sg.second.second) {
-            if ((x >= sg.first.first && x <= sg.second.first) || (x <= sg.first.first && x >= sg.second.first)) {
-                return true;
-            }
+            if ((x >= sg.first.first && x <= sg.second.first) || (x <= sg.first.first && x >= sg.second.first)) return true;
         }
     }
     return false;
@@ -31,7 +27,6 @@ int main() {
         getline(f, read);
         r = split(read, " -> ");
         for (int i=0; i<r.size()-1; i++) {
-            
             start = split(r[i], ",");
             end = split(r[i+1], ",");
             maxY = max(maxY, max(stoi(start[1]), stoi(end[1])));
@@ -41,9 +36,6 @@ int main() {
         }
         if (f.eof()) break;
     }
-    cout << "Max Y: " << maxY << endl;
-    cout << "Max X: " << maxX << endl;
-    cout << "Min X: " << minX << endl;
     int currX = 500; int currY = 0;
     int settled = 0;
     pair<int, int> point;
