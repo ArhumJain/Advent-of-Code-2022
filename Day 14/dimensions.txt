@@ -1,0 +1,9 @@
+Main: 
+    Max Y: 165
+    Max X: 537
+    Min X: 483
+
+Test:
+    Max Y: 9
+    Max X: 503
+    Min X: 494
