@@ -29,8 +29,7 @@ int main() {
         range.second = p.first.first + midLength;
         ranges.push_back(range);
     }
-    sort(ranges.begin(), ranges.end(), [] (pair<int, int> &p1, pair<int, int> &p2) {return p1.first < p2.first;});
-    vec<CoordPair> finalSegments;
+    sort(ranges.begin(), ranges.end());
     for (int i=0; i<ranges.size()-1; i++) {
         if (ranges[i+1].first <= ranges[i].second) {
             ranges[i+1].first = min(ranges[i+1].first, ranges[i].first);
