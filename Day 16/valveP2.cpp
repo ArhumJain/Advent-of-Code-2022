@@ -17,62 +17,64 @@ struct Valve {
     }
 };
 
-// map<tuple<string, int, int>, int> state;
-map<tuple<string, string, int, int, int>, int> state;
-
+map<tuple<string, string, int, int>, int> state;
+// map<tuple<int,>> state;
 inline int lifePressure(int pressure, string valve, int minutes, map<string, Valve> &valves) {
     return pressure + (valves[valve].rate * (26-(minutes+1)));
 }
-int recurse(string valveM, string valveEle, int pressureM, int pressureEle, int minutes, int &m, map<string, Valve> &valves, string prevM, string prevEle) {
-    if (minutes == 26) {
+int c = 0;
+int recurse(string valveM, string valveEle, int pressureM, int pressureEle, int minutes, int &m, map<string, Valve> &valves, string prevM, string prevEle, int turnedOn, int maxOn) {
+    if (minutes == 26 || turnedOn == maxOn) {
+        // c++;
         return pressureM + pressureEle;
     }
-    else if (state[{valveM, valveEle, pressureM, pressureEle, minutes}] != 0) return state[{valveM, valveEle, pressureM, pressureEle, minutes}];
-    if (pressureM + pressureEle > 1700) cout << pressureM + pressureEle << endl;
+    else if (state[{valveM, valveEle, pressureM+pressureEle, minutes}] > 0) {
+        return state[{valveM, valveEle, pressureM+pressureEle, minutes}];
+    } 
     int localMax = -1;
-    bool mOn = !valves[valveM].on;
-    bool eleOn = !valves[valveEle].on;
-
-    if (!valves[valveM].on && !valves[valveEle].on && valves[valveM].rate != 0 && valves[valveEle].rate != 0) {
+    if (!valves[valveM].on && !valves[valveEle].on && valves[valveM].rate != 0 && valves[valveEle].rate != 0 && valveM != valveEle) {
         valves[valveM].on = true;
-        valves[valveM].on = true;
-        localMax = max(localMax, recurse(valveM,valveEle,lifePressure(pressureM,valveM,minutes,valves),lifePressure(pressureEle, valveEle, minutes, valves), 
-                                         minutes+1, m, valves, valveM, valveEle)); 
+        valves[valveEle].on = true;
+        localMax = max(localMax,recurse(valveM,valveEle,lifePressure(pressureM,valveM,minutes,valves),lifePressure(pressureEle,valveEle,minutes,valves), 
+                                         minutes+1, m, valves, valveM, valveEle, turnedOn+2, maxOn)); 
         valves[valveM].on = false;
-        valves[valveM].on = false;
+        valves[valveEle].on = false;
     }
     if (!valves[valveM].on && valves[valveM].rate != 0) {
         valves[valveM].on = true;
-        for (auto &v: valves[valveEle].leads) {
-            localMax = max(localMax, recurse(valveM, v, lifePressure(pressureM,valveM,minutes,valves),pressureEle,minutes+1,m,valves,valveM,valveEle));
+        for (auto v: valves[valveEle].leads) {
+            localMax = max(localMax,recurse(valveM,v,lifePressure(pressureM,valveM,minutes,valves),pressureEle,minutes+1,m,valves,valveM,valveEle,turnedOn+1,maxOn));
         }
         valves[valveM].on = false;
     }
-    if (!valves[valveEle].on && valves[valveEle].rate != 0) {
+    else if (!valves[valveEle].on && valves[valveEle].rate != 0) {
         valves[valveEle].on = true;
-        for (auto &v: valves[valveM].leads) {
-            localMax = max(localMax, recurse(v, valveEle, pressureM,lifePressure(pressureEle,valveEle,minutes,valves),minutes+1,m,valves,valveM,valveEle));
+        for (auto v: valves[valveM].leads) {
+            localMax = max(localMax,recurse(v, valveEle, pressureM,lifePressure(pressureEle,valveEle,minutes,valves),minutes+1,m,valves,valveM,valveEle,turnedOn+1,maxOn));
         }
         valves[valveEle].on = false;
     }
-    for (auto &me: valves[valveM].leads) {
-        if (me != prevM) {
-            for (auto &ele: valves[valveEle].leads) {
-                if (ele != prevEle) {
-                    localMax = max(localMax, recurse(me, ele, pressureM, pressureEle, minutes+1, m, valves, valveM, valveEle));
+    for (auto me: valves[valveM].leads) {
+        if (me != prevM){
+            for (auto ele: valves[valveEle].leads) {
+                if (ele != prevEle && (ele != me)) {
+                    localMax = max(localMax, recurse(me, ele, pressureM, pressureEle, minutes+1, m, valves, valveM, valveEle, turnedOn, maxOn));
                 }
             }
         }
     }
-    // if (valves[valve].on == false && valves[valve].rate != 0) {
-    //     valves[valve].on = true;
-    //     localMax = max(localMax, recurse(valve, pressure+(valves[valve].rate * (30-(minutes+1))), minutes+1, m, valves, valve));
-    //     valves[valve].on = false;
+    // if (localMax > 1700)  {
+    //     cout << localMax << endl;
     // }
-    // for (auto v: valves[valve].leads) { // and valve not equal to prev
-    //     if (v != prev) localMax = max(localMax, recurse(v, pressure, minutes+1, m, valves, valve));
+    // if (c%100000) {
+    //     cout << localMax << endl;
     // }
-    state[{valveM, valveEle, pressureM, pressureEle, minutes}] = localMax;
+    // c++
+    // if (c%1000000 == 0) {
+    //     cout << localMax << endl;
+    // }
+    // state[{valveM, valveEle, pressureM+pressureEle, minutes}] = localMax;
+    state[{valveM, valveEle, pressureM+pressureEle, minutes}] = localMax;
     return localMax;
 }
 
@@ -95,6 +97,5 @@ int main() {
         sort(valves[pair.first].leads.begin(), valves[pair.first].leads.end(), [&valves] (const string v1, const string v2) {return valves[v1].rate > valves[v2].rate;});
     }
     int m = -1;
-    cout << recurse("AA", "AA",0,0,0,m,valves,"", "") << endl;
-    cout << "hi" << endl; 
+    cout << recurse("AA","AA",0,0,0,m,valves,"", "", 0, maxOn) << endl;
 }
