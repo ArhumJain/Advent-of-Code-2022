@@ -1,7 +1,9 @@
 
 #include "../utils/advent.h"
 
-using namespace aoc;
+using namespace aoc; // Untested if this actually gives the right result.
+                    // Wrote it while original part 2 was running in the background for 3 hours and
+                    // it ended up giving the right answer.
 
 constexpr int TEST = 0;
 F f(TEST == 1 ? "test.in" : "main.in");
