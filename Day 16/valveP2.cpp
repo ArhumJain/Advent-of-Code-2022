@@ -18,14 +18,12 @@ struct Valve {
 };
 
 map<tuple<string, string, int, int>, int> state;
-// map<tuple<int,>> state;
 inline int lifePressure(int pressure, string valve, int minutes, map<string, Valve> &valves) {
     return pressure + (valves[valve].rate * (26-(minutes+1)));
 }
 int c = 0;
 int recurse(string valveM, string valveEle, int pressureM, int pressureEle, int minutes, int &m, map<string, Valve> &valves, string prevM, string prevEle, int turnedOn, int maxOn) {
     if (minutes == 26 || turnedOn == maxOn) {
-        // c++;
         return pressureM + pressureEle;
     }
     else if (state[{valveM, valveEle, pressureM+pressureEle, minutes}] > 0) {
@@ -63,17 +61,6 @@ int recurse(string valveM, string valveEle, int pressureM, int pressureEle, int 
             }
         }
     }
-    // if (localMax > 1700)  {
-    //     cout << localMax << endl;
-    // }
-    // if (c%100000) {
-    //     cout << localMax << endl;
-    // }
-    // c++
-    // if (c%1000000 == 0) {
-    //     cout << localMax << endl;
-    // }
-    // state[{valveM, valveEle, pressureM+pressureEle, minutes}] = localMax;
     state[{valveM, valveEle, pressureM+pressureEle, minutes}] = localMax;
     return localMax;
 }
