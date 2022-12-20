@@ -46,4 +46,3 @@ int main() {
     }
     cout << maxHeight+1 << endl;
 }
-
