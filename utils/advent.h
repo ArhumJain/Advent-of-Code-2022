@@ -4,6 +4,10 @@ using namespace std;
 
 namespace aoc {
     using F = ifstream;
+
+    template <typename T>
+    using vec3d = vector<vector<vector<T>>>;
+
     template <typename T>
     using vec2d = vector<vector<T>>;
 
@@ -48,4 +52,5 @@ namespace aoc {
         } while (end != -1);
         return sp;
     }
+
 }
