@@ -42,7 +42,9 @@ namespace aoc {
         }
     }
 
-
+    inline bool sign(int n) {
+        return n >= 0 ? true : false;
+    }
     std::vector<std::string> split(std::string s, std::string d = " ") { // thanks stackoverflow!
         std::vector<std::string> sp;
         int start, end = -1*d.size();
