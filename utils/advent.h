@@ -42,7 +42,8 @@ namespace aoc {
         }
     }
 
-    inline bool sign(int n) {
+    template <typename T>
+    inline bool sign(T n) {
         return n >= 0 ? true : false;
     }
     std::vector<std::string> split(std::string s, std::string d = " ") { // thanks stackoverflow!
