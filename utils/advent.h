@@ -1,4 +1,10 @@
 #include <bits/stdc++.h>
+// #include <vector>
+// #include <map>
+// #include <unordered_map>
+// #include <set>
+// #include <unordered_set>
+
 
 using namespace std;
 
@@ -33,6 +39,13 @@ namespace aoc {
     void print1d(std::vector<T> &v, string delimiter="\n") {
         for (T i: v) std::cout << i << delimiter;
     }
+
+    template <typename T> 
+    std::ostream &operator<<(ostream &o, std::vector<T> &v) {
+        for_each(v.begin(), v.end(), [&](T &a){o << a << " ";});
+        return o;
+    }
+
 
     template <typename T> 
     void print2d(std::vector<std::vector<T>> &v, string delimitColumn=" ", string delimitRow="\n") {
