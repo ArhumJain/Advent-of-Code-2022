@@ -117,7 +117,3 @@ int main()
         if (f.eof()) break;
     }
 }
-
-
-
-
